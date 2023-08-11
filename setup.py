@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="lshkrepresentatives", 
-    version="1.0.4",
+    version="1.0.5",
     author="nmtoan91",
     author_email="toan_stt@yahoo.com",
     description="A python package for LSH-k-Representatives algorithm",
