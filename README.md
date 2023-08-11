@@ -35,7 +35,7 @@ kreps.DoCluster()
 kreps.CalcScore()
 ```
 
-### Out come:
+### Outcome:
 ```shell
 Generating disMatrix for DILCA
 Saving DILCA to: saved_dist_matrices/json/DILCA_None.json
