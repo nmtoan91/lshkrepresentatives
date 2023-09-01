@@ -24,7 +24,7 @@ y = np.array([0,0,0,0,1,1,1])
 ### LSHk-Representatives (Init): 
 
 ```shell
-kreps = LSHkRepresentatives_Init(X,y,n_init=5,n_clusters=2 ,verbose=3)
+kreps = LSHkRepresentatives_Init(X,y,n_init=5,n_clusters=2 ,verbose=3) #variable y is optional for computing the accuracy score, can be replaced as 'None'. 
 kreps.SetupLSH()
 kreps.DoCluster()
 
@@ -49,7 +49,7 @@ Purity: 1.00 NMI: 1.00 ARI: 1.00 Sil:  0.59 Acc: 1.00 Recall: 1.00 Precision: 1.
 ### LSHk-Representatives (Full): 
 
 ```shell
-kreps = LSHkRepresentatives_Full(X,y,n_init=5,n_clusters=2 ,verbose=3)
+kreps = LSHkRepresentatives_Full(X,y,n_init=5,n_clusters=2 ,verbose=3) #variable y is optional for computing the accuracy score, can be replaced as 'None'.
 kreps.SetupLSH()
 kreps.DoCluster()
 

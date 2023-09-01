@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="lshkrepresentatives", 
-    version="1.0.7",
+    version="1.0.8",
     author="nmtoan91",
     author_email="toan_stt@yahoo.com",
-    description="A python package for LSH-k-Representatives algorithm",
+    description="LSH-k-Representatives: A categorial clustering algorithm using LSH",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/nmtoan91/lshkrepresentatives",
