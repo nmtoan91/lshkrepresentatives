@@ -9,21 +9,21 @@ pip install lshkrepresentatives
 ```
 
 ### Import the packages:
-```shell
+```python
 import numpy as np
 from LSHkRepresentatives.LSHkRepresentatives_Init import LSHkRepresentatives_Init
 from LSHkRepresentatives.LSHkRepresentatives_Full import LSHkRepresentatives_Full
 ```
 ### Generate a simple categorical dataset:
 
-```shell
+```python
 X = np.array([[0,0,0],[0,1,1],[0,0,0],[1,0,1],[2,2,2],[2,3,2],[2,3,2]])
 y = np.array([0,0,0,0,1,1,1])
 ```
 
 ### LSHk-Representatives (Init): 
 
-```shell
+```python
 kreps = LSHkRepresentatives_Init(X,y,n_init=5,n_clusters=2 ,verbose=3) #variable y is optional for computing the accuracy score, can be replaced as 'None'. 
 kreps.SetupLSH()
 kreps.DoCluster()
@@ -31,7 +31,7 @@ kreps.DoCluster()
 ```
 
 ### Built-in evaluattion metrics:
-```shell
+```python
 kreps.CalcScore()
 ```
 
@@ -48,7 +48,7 @@ Purity: 1.00 NMI: 1.00 ARI: 1.00 Sil:  0.59 Acc: 1.00 Recall: 1.00 Precision: 1.
 
 ### LSHk-Representatives (Full): 
 
-```shell
+```python
 kreps = LSHkRepresentatives_Full(X,y,n_init=5,n_clusters=2 ,verbose=3) #variable y is optional for computing the accuracy score, can be replaced as 'None'.
 kreps.SetupLSH()
 kreps.DoCluster()
@@ -56,7 +56,7 @@ kreps.DoCluster()
 ```
 
 ### Built-in evaluattion metrics:
-```shell
+```python
 kreps.CalcScore()
 ```
 
@@ -93,3 +93,6 @@ epoch_costs_: Average time for an initialization
 ## References:
 T. N. Mau and V.-N. Huynh, ``An LSH-based k-Representatives Clustering Method for Large Categorical Data." Neurocomputing,
 			Volume 463, 2021, Pages 29-44, ISSN 0925-2312, https://doi.org/10.1016/j.neucom.2021.08.050.
+
+## Github repository
+https://github.com/nmtoan91/lshkrepresentatives

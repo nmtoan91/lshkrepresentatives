@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="lshkrepresentatives", 
-    version="1.0.8",
+    version="1.0.9",
     author="nmtoan91",
     author_email="toan_stt@yahoo.com",
     description="LSH-k-Representatives: A categorial clustering algorithm using LSH",
