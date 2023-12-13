@@ -2,6 +2,9 @@ Python implementations of the LSH-k-Representatives algorithms for clustering ca
 
 Different from k-Modes algorithm, LSH-k-Representatives define the "representatives" that keep the frequencies of all categorical values of the clusters.
 
+## Notebook sample: 
+https://github.com/nmtoan91/lshkrepresentatives/blob/main/LSHkRepresentatives_notebook_sample.ipynb
+
 ## Installation:
 ### Using pip: 
 ```shell
@@ -123,5 +126,5 @@ T. N. Mau and V.-N. Huynh, ``An LSH-based k-Representatives Clustering Method fo
 }
 ```
 ## pypi/github repository
-https://pypi.org/project/lshkrepresentatives/
+https://pypi.org/project/lshkrepresentatives/\
 https://github.com/nmtoan91/lshkrepresentatives
