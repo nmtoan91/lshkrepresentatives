@@ -3,7 +3,7 @@ import os
 import os.path
 import  csv
 import json
-from .MeasureManager import MeasureManager
+from MeasureManager import MeasureManager
 import numpy as np
 from termcolor import colored
 class Measure(object):

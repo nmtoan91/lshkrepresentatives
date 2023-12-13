@@ -13,18 +13,18 @@ import timeit
 from kmodes.util import get_max_value_key, encode_features, get_unique_rows, \
     decode_centroids, pandas_to_numpy
 
-from .ClusteringAlgorithm import ClusteringAlgorithm
+from ClusteringAlgorithm import ClusteringAlgorithm
 from sklearn.metrics.cluster import adjusted_rand_score
 from sklearn.metrics.cluster import normalized_mutual_info_score
 from sklearn.metrics.cluster import adjusted_mutual_info_score
 from sklearn.metrics.cluster import homogeneity_score
 import random
-from .LSH import LSH 
+from LSH import LSH 
 import multiprocessing as mp
 import math
 from collections import defaultdict
 
-class LSHkRepresentatives_Init(ClusteringAlgorithm):
+class LSHkRepresentatives(ClusteringAlgorithm):
 
     def SetupLSH(self, hbits=-1,k=-1,measure='DILCA' ):
         #hbits = 2*math.ceil(math.log(self.k)/math.log(2))
@@ -45,7 +45,7 @@ class LSHkRepresentatives_Init(ClusteringAlgorithm):
     def test(self):
         print("a234 " + str(self.k))
     def Distance(self,representative, point):
-        sum=0;
+        sum=0
         for i in range (self.d):
             sum = sum + representative[i][point[i]]
         return self.d - sum
@@ -177,7 +177,7 @@ class LSHkRepresentatives_Init(ClusteringAlgorithm):
         self.k = k = n_clusters = self.k
         self.farest_point = np.zeros((self.k,2))
 
-        self.name = "LSHkRepresentatives_Init"
+        self.name = "LSHkRepresentatives"
         #print("LSHkRepresentatives start clustering")
         #Init varibles
         X = self.X
@@ -234,7 +234,7 @@ class LSHkRepresentatives_Init(ClusteringAlgorithm):
                             dist_from_master_to_master[ki2][i] = float('inf')
 
             for key_id, key in enumerate(self.lsh.hashTable.keys()):
-                nearest_key=-1;
+                nearest_key=-1
                 nearest_dist = float('inf')
                 for keymaster_id, value in enumerate(masterkeys):
                     d_temp = dist_from_master_to_other[keymaster_id][key_id]
@@ -250,11 +250,11 @@ class LSHkRepresentatives_Init(ClusteringAlgorithm):
                     self.lsh_group[i] = ki
 
             self.CheckEmptyClusters(representatives, X,representatives_sum, representatives_count,membship,labels_matrix)
-            self.UpdateRepresentatives(representatives,representatives_sum,representatives_count ) ;
+            self.UpdateRepresentatives(representatives,representatives_sum,representatives_count ) 
             for i in range(self.n_iter):
                 self.iter = i
                 cost , move, count_empty = self.UpdateLabels(representatives, X,representatives_sum, representatives_count,membship,labels_matrix)
-                self.UpdateRepresentatives(representatives,representatives_sum,representatives_count ) ;
+                self.UpdateRepresentatives(representatives,representatives_sum,representatives_count ) 
                 if last_cost == cost and move==0: 
                     last_cost = self.UpdateLabelsLast(representatives, X,representatives_sum, representatives_count,membship,labels_matrix)
                     #print("last_cost=", last_cost, "last_cost2=",last_cost2)
@@ -270,8 +270,12 @@ class LSHkRepresentatives_Init(ClusteringAlgorithm):
         self.time_score = (timeit.default_timer() - start_time)/ self.n_init
         self.labels = labels
         print("LSH time:", self.time_lsh ,"Score: ", all_costs[best] , " Time:", self.time_score)
+        self.representatives= representatives
         return self.labels
         # Update representives
+    def predict(self,x):
+        dist_matrix = self.DistanceRepresentativestoAPoints(self.representatives, x)
+        return dist_matrix[0]
 
      
 def Test_Simple():
@@ -279,8 +283,8 @@ def Test_Simple():
     MeasureManager.CURRENT_DATASET = DB['name']
     MeasureManager.CURRENT_MEASURE = 'DILCA'
 
-    print("\n\n############## LSHkRepresentatives_Init ###################")
-    lshkrepresentatives = LSHkRepresentatives_Init(DB['DB'],DB['labels_'] )
+    print("\n\n############## LSHkRepresentatives ###################")
+    lshkrepresentatives = LSHkRepresentatives(DB['DB'],DB['labels_'] )
     lshkrepresentatives.SetupMeasure(MeasureManager.CURRENT_MEASURE)
     lshkrepresentatives.SetupLSH(measure=MeasureManager.CURRENT_MEASURE)
     lshkrepresentatives.DoCluster()
@@ -308,8 +312,8 @@ def Test():
         MeasureManager.CURRENT_DATASET= DB['name']
     else:
         DB = tulti.LoadRealData(MeasureManager.CURRENT_DATASET)
-    print("\n\n############## LSHkRepresentatives_Init ###################")
-    lshkrepresentatives = LSHkRepresentatives_Init(DB['DB'],DB['labels_'] ,dbname=MeasureManager.CURRENT_DATASET ,k=TDef.k)
+    print("\n\n############## LSHkRepresentatives ###################")
+    lshkrepresentatives = LSHkRepresentatives(DB['DB'],DB['labels_'] ,dbname=MeasureManager.CURRENT_DATASET ,k=TDef.k)
     lshkrepresentatives.SetupMeasure(MeasureManager.CURRENT_MEASURE)
     lshkrepresentatives.SetupLSH(measure=MeasureManager.CURRENT_MEASURE)
     lshkrepresentatives.DoCluster()
@@ -321,8 +325,8 @@ def TestDatasets():
         DB = tulti.LoadRealData(dbname)
         MeasureManager.CURRENT_DATASET = dbname
         MeasureManager.CURRENT_MEASURE = 'Overlap'
-        print("\n\n############## LSHkRepresentatives_Init ###################")
-        alo = LSHkRepresentatives_Init(DB['DB'],DB['labels_'],dbname=MeasureManager.CURRENT_DATASET )
+        print("\n\n############## LSHkRepresentatives ###################")
+        alo = LSHkRepresentatives(DB['DB'],DB['labels_'],dbname=MeasureManager.CURRENT_DATASET )
         alo.SetupMeasure(MeasureManager.CURRENT_MEASURE)
         alo.SetupLSH(measure=MeasureManager.CURRENT_MEASURE)
         alo.DoCluster()
@@ -334,7 +338,7 @@ def TestMeasures():
         for dataset in MeasureManager.DATASET_LIST:
             MeasureManager.CURRENT_DATASET=dataset
             DB = tulti.LoadRealData(MeasureManager.CURRENT_DATASET)
-            alo = LSHkRepresentatives_Init(DB['DB'],DB['labels_'],dbname=MeasureManager.CURRENT_DATASET )
+            alo = LSHkRepresentatives(DB['DB'],DB['labels_'],dbname=MeasureManager.CURRENT_DATASET )
             alo.SetupMeasure(MeasureManager.CURRENT_MEASURE)
             alo.SetupLSH(measure=MeasureManager.CURRENT_MEASURE)
             alo.DoCluster()
@@ -343,10 +347,17 @@ def TestMeasures():
             table.SaveToExcelFolder("RESULT/r20200916",alo.name,[i+1 for i in range(0,1000)])
 
 if __name__ == "__main__":
-    TDef.InitParameters(sys.argv)
-    if TDef.test_type == 'datasets':
-        TestDatasets()
-    elif TDef.test_type == 'measures':
-        TestMeasures()
-    else:
-        Test()
+    X = np.array([[0,0,0],[0,1,1],[0,0,0],[1,0,1],[2,2,2],[2,3,2],[2,3,2]])
+    kreps = LSHkRepresentatives(n_clusters=2,n_init=5) 
+    kreps.fit(X)
+    print()
+    print(kreps.labels)
+    print()
+
+    print(kreps.predict(X[0]))
+    print(kreps.predict(X[1]))
+    print(kreps.predict(X[2]))
+    print(kreps.predict(X[3]))
+    print(kreps.predict(X[4]))
+    print(kreps.predict(X[5]))
+   

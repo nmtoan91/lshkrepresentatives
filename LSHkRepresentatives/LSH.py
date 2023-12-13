@@ -12,7 +12,7 @@ from sklearn.utils.validation import check_array
 import timeit
 
 import random
-from .SimpleHashing import SimpleHashing
+from SimpleHashing import SimpleHashing
 from collections import defaultdict
 import statistics 
 from collections import Counter

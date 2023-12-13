@@ -37,7 +37,7 @@ class SimpleHashing:
         #module = __import__(classname, globals(), locals(), ['object'])
         #class_ = getattr(module, classname)
         if classname=='DILCA':
-            from .DILCA import DILCA
+            from DILCA import DILCA
             class_ = DILCA
         self.measure = class_()
         self.measure.setUp(self.X, self.y)

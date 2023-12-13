@@ -20,7 +20,24 @@ def nCr(n,r):
     return f(n) // f(r) // f(n-r)
 class ClusteringAlgorithm:
     ALGORITHM_LIST = ['kModes','kRepresentatives']
-    def __init__(self, X, y,n_init=5,n_clusters=-1,max_iter=100,dbname='dpname',verbose =0,random_state = None):
+    # def __init__(self, X, y,n_init=5,n_clusters=-1,max_iter=100,dbname='dpname',verbose =0,random_state = None):
+    #     self.random_state= random_state
+    #     self.verbose = verbose 
+    #     self.measurename = 'None'
+    #     self.dicts = [];self.dicts2 = []
+    #     self.iter=-1
+    #     self.dbname = dbname
+    #     self.time_lsh=-1
+    #     self.X = X
+    #     self.y = y
+    #     self.n = len(self.X)
+    #     self.d = len(self.X[0])
+    #     self.k = n_clusters if n_clusters > 0 else len(np.unique(y))
+    #     self.n_init = n_init
+    #     self.n_iter = max_iter
+    #     self.scorebest = -2
+    def __init__(self,n_clusters,n_init=5,max_iter=100,dbname='dpname',verbose =0,random_state = None):
+        self.y = None
         self.random_state= random_state
         self.verbose = verbose 
         self.measurename = 'None'
@@ -28,14 +45,18 @@ class ClusteringAlgorithm:
         self.iter=-1
         self.dbname = dbname
         self.time_lsh=-1
-        self.X = X
-        self.y = y
-        self.n = len(self.X)
-        self.d = len(self.X[0])
+        
         self.k = n_clusters if n_clusters > 0 else len(np.unique(y))
         self.n_init = n_init
         self.n_iter = max_iter
         self.scorebest = -2
+    def fit(self,X):
+        self.X = X
+        self.n = len(self.X)
+        self.d = len(self.X[0])
+        self.SetupLSH()
+        self.DoCluster()
+        return self.labels
     def SetupMeasure(self, classname):
         self.measurename = classname
         module = __import__(classname, globals(), locals(), ['object'])
