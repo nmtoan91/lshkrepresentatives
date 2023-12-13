@@ -13,13 +13,13 @@ import timeit
 from kmodes.util import get_max_value_key, encode_features, get_unique_rows, \
     decode_centroids, pandas_to_numpy
 
-from ClusteringAlgorithm import ClusteringAlgorithm
+from .ClusteringAlgorithm import ClusteringAlgorithm
 from sklearn.metrics.cluster import adjusted_rand_score
 from sklearn.metrics.cluster import normalized_mutual_info_score
 from sklearn.metrics.cluster import adjusted_mutual_info_score
 from sklearn.metrics.cluster import homogeneity_score
 import random
-from LSH import LSH 
+from .LSH import LSH 
 import multiprocessing as mp
 import math
 from collections import defaultdict

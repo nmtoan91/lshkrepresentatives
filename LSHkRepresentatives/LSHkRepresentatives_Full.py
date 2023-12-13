@@ -314,9 +314,13 @@ class LSHkRepresentatives_Full(ClusteringAlgorithm):
         self.labels = labels
         print("LSH time:", self.time_lsh ,"Score: ", all_costs[best] , " Time:", self.time_score)
         self.scorebest = all_costs[best]
+        self.representatives = representatives
         return self.labels
         # Update representives
-
+    def predict(self,x):
+        dist_matrix = self.DistanceRepresentativestoAPoints(self.representatives, x)
+        return dist_matrix[0]
+    
 def Test(): 
     #MeasureManager.CURRENT_DATASET = 'tae_c.csv'
     MeasureManager.CURRENT_DATASET = 'lung.csv'

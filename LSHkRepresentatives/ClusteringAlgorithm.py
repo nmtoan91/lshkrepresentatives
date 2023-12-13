@@ -151,7 +151,8 @@ class ClusteringAlgorithm:
         AC = (TP+TN)/(TP+TN+FP+FN)
         #print('PR=',PR,'RC=',RC,'AC=',AC )
         return AC,PR,RC
-    def CalcScore(self, verbose=True):
+    def CalcScore(self,y, verbose=True):
+        self.y = y
         starttime = timeit.default_timer()
         s="";
         if self.n*self.k <= 8000000: 

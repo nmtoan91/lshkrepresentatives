@@ -1,6 +1,6 @@
-from Measure import Measure
+from .Measure import Measure
 import math
-from MathUtils import *
+from .MathUtils import *
 from scipy.stats import entropy
 import numpy as np
 import timeit
