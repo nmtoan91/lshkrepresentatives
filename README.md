@@ -126,5 +126,5 @@ T. N. Mau and V.-N. Huynh, ``An LSH-based k-Representatives Clustering Method fo
 }
 ```
 ## pypi/github repository
-https://pypi.org/project/lshkrepresentatives/\
+https://pypi.org/project/lshkrepresentatives/ \
 https://github.com/nmtoan91/lshkrepresentatives
