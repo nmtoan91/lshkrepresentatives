@@ -5,7 +5,8 @@ Different from k-Modes algorithm, LSH-k-Representatives define the "representati
 ## Installation:
 ### Using pip: 
 ```shell
-pip install lshkrepresentatives
+pip install lshkrepresentatives numpy scikit-learn pandas kmodes networkx termcolor
+
 ```
 
 ### Import the packages:
