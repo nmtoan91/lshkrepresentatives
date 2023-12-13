@@ -318,8 +318,14 @@ class LSHkRepresentatives_Full(ClusteringAlgorithm):
         return self.labels
         # Update representives
     def predict(self,x):
-        dist_matrix = self.DistanceRepresentativestoAPoints(self.representatives, x)
-        return dist_matrix[0]
+        if len(x.shape) ==1:
+            dist_matrix = self.DistanceRepresentativestoAPoints(self.representatives, x)
+            return dist_matrix[0]
+        else:
+            out = []
+            for xi in x:
+                out.append(self.DistanceRepresentativestoAPoints(self.representatives, xi)[0])
+            return np.array(out)
     
 def Test(): 
     #MeasureManager.CURRENT_DATASET = 'tae_c.csv'
