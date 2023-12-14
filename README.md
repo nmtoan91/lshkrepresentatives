@@ -1,15 +1,21 @@
-Python implementations of the LSH-k-Representatives algorithms for clustering categorical data:
+### Python implementations of the LSH-k-Representatives algorithms for clustering categorical data:
 
-Different from k-Modes algorithm, LSH-k-Representatives define the "representatives" that keep the frequencies of all categorical values of the clusters.
+#### Different from k-Modes algorithm, LSH-k-Representatives define the "representatives" that keep the frequencies of all categorical values of the clusters.
 
-## Notebook sample: 
-https://github.com/nmtoan91/lshkrepresentatives/blob/main/LSHkRepresentatives_notebook_sample.ipynb
+## Notebook Samples: 
+##### Applying LSHkRepresentatives:
+##### https://github.com/nmtoan91/lshkrepresentatives/blob/main/notebook_sample.ipynb
+##### Applying LSHkRepresentatives_Full (for huge dataset):
+##### https://github.com/nmtoan91/lshkrepresentatives/blob/main/notebook_sample_LSHkRepresentatives_Full.ipynb
+##### Normalizing unstructed normal dataset: 
+##### https://github.com/nmtoan91/lshkrepresentatives/blob/main/notebook_dataset_normalization.ipynb
+Note: The dataset is auto normalized if it detect string, or disjointed data, or nan 
+
 
 ## Installation:
 ### Using pip: 
 ```shell
 pip install lshkrepresentatives numpy scikit-learn pandas kmodes networkx termcolor
-
 ```
 
 ### Import the packages:
@@ -20,7 +26,7 @@ from LSHkRepresentatives.LSHkRepresentatives import LSHkRepresentatives
 ### Generate a simple categorical dataset:
 
 ```python
-X = np.array([[0,0,0],[0,1,1],[0,0,0],[1,0,1],[2,2,2],[2,3,2],[2,3,2]])
+X = np.array([['red',0,np.nan],['green',1,1],['blue',0,0],[1,5111,1],[2,2,2],[2,6513,'rectangle'],[2,3,6565]])
 ```
 
 ### LSHk-Representatives (Init): 
@@ -33,7 +39,7 @@ labels = kreps.fit(X)
 #Print the label for dataset X
 print('Labels:',labels)
 #Predict label for the random instance x
-x = np.array([1,2,0])
+x = np.array(['red',5111,0])
 label = kreps.predict(x)
 print(f'Cluster of object {x} is: {label}')
 ```

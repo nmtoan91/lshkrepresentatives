@@ -218,7 +218,7 @@ class LSHkRepresentatives(ClusteringAlgorithm):
             for dvalue in range(self.D[d]):
                 if dvalue not in self.uniques[d]:
                     isNormalized = False; break
-        print("\n\n\n ",isNormalized,"\n\n\n\n\n")
+        #print("\n\n\n ",isNormalized,"\n\n\n\n\n")
         if isNormalized== False:
             self.normalizer = CategoricalDatasetNormalization(self.X)
             self.X = self.normalizer.Normalize(self.X)

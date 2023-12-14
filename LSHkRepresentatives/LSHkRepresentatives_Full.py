@@ -39,6 +39,7 @@ from collections import defaultdict
 class LSHkRepresentatives_Full(ClusteringAlgorithm):
 
     def SetupLSH(self, hbits=-1,k=-1,measure='DILCA' ):
+        self.CheckNormalizedData()
         #hbits = 2*math.ceil(math.log(self.k)/math.log(2))
         start = timeit.default_timer()
         self.lsh = LSH(self.X,self.y,measure=measure,hbits=hbits)
@@ -209,7 +210,21 @@ class LSHkRepresentatives_Full(ClusteringAlgorithm):
                 self.cluster_dist_matrix[i][j] = self.cluster_dist_matrix[j][i] =  sum
             self.near_clusters[i] = np.argsort(self.cluster_dist_matrix[i])[0:self.nearcluster_count+1]
         #print(self.near_clusters[0])
+    def CheckNormalizedData(self):
+        isNormalized = True
+        for d in range(self.d):
+            if isNormalized == False: break
+            for dvalue in range(self.D[d]):
+                if dvalue not in self.uniques[d]:
+                    isNormalized = False; break
+        #print("\n\n\n ",isNormalized,"\n\n\n\n\n")
+        if isNormalized== False:
+            self.normalizer = CategoricalDatasetNormalization(self.X)
+            self.X = self.normalizer.Normalize(self.X)
+        else: self.normalizer = None
     def DoCluster(self,n_group=2,init_type ='random'):
+        n = len(self.X)
+        d = self.X.shape[1]
         if n_group==-1:
             if self.k >= 8: n_group = self.k/4;
             else: n_group=2
@@ -219,12 +234,11 @@ class LSHkRepresentatives_Full(ClusteringAlgorithm):
         self.farest_point = np.zeros((self.k,2))
 
         self.name = "LSHkRepresentatives_Full"
-        #print("LSHkRepresentatives start clustering")
-        #Init varibles
-        X = self.X
-        self.n = n = self.X.shape[0];
-        self.d = d = X.shape[1]
-        self.D = D = [len(np.unique(X[:,i])) for i in range(d) ]
+        
+        
+        # self.n = n = self.X.shape[0];
+        # self.d = d = X.shape[1]
+        # self.D = D = [len(np.unique(X[:,i])) for i in range(d) ]
         all_labels = []
         all_costs = []
         start_time = timeit.default_timer()
@@ -242,12 +256,12 @@ class LSHkRepresentatives_Full(ClusteringAlgorithm):
             
             #if TDef.verbose >=3: print("Initing memories");
             for i in range(n): labels_matrix[i] = 65535
-            representatives_count = [[[0 for i in range(D[j])] for j in range(d)]for ki in range(k)]
+            representatives_count = [[[0 for i in range(self.D[j])] for j in range(d)]for ki in range(k)]
             representatives_sum = [0 for ki in range(k)]
             last_cost = float('inf')
 
             #representatives = [[[0 for i in range(D[j])] for j in range(d)] for ki in range(k)]
-            representatives = [[np.zeros(D[j]) for j in range(d)] for ki in range(k)]
+            representatives = [[np.zeros(self.D[j]) for j in range(d)] for ki in range(k)]
 
             buckets = [(k,len(self.lsh.hashTable[k])) for k in self.lsh.hashTable.keys()]
             buckets2 = sorted(buckets, key=lambda x: -x[-1])
@@ -282,11 +296,11 @@ class LSHkRepresentatives_Full(ClusteringAlgorithm):
                     representatives_sum[i2]+=1
                     labels_matrix[j] = i2
                     membship[i2][j] = 1
-                    for ii, val in enumerate(X[j]):
+                    for ii, val in enumerate(self.X[j]):
                         representatives_count[i2][ii][val]+=1
 
             #if TDef.verbose >=3: print ('Checking Empty Clusters')
-            self.CheckEmptyClusters_Init(representatives, X,representatives_sum, representatives_count,membship,labels_matrix)
+            self.CheckEmptyClusters_Init(representatives, self.X,representatives_sum, representatives_count,membship,labels_matrix)
             #if TDef.verbose >=3: print ('UpdateRepresentatives')
             self.UpdateRepresentatives(representatives,representatives_sum,representatives_count ) ;
             self.UpdateClusterDistMatrix(representatives)
@@ -294,12 +308,12 @@ class LSHkRepresentatives_Full(ClusteringAlgorithm):
             for i in range(self.n_iter):
                 start_time_iter = timeit.default_timer()
                 self.iter = i
-                cost , move, count_empty = self.UpdateLabels(representatives, X,representatives_sum, representatives_count,membship,labels_matrix)
+                cost , move, count_empty = self.UpdateLabels(representatives, self.X,representatives_sum, representatives_count,membship,labels_matrix)
                 self.UpdateRepresentatives(representatives,representatives_sum,representatives_count ) ;
                 self.UpdateClusterDistMatrix(representatives)
                 #if TDef.verbose >=2: print ('Iter ' + str(i),"Cost: ", "%.2f"%cost," Move:", move, " Num empty:", count_empty," Timelapse:","%.2f"% (timeit.default_timer()-start_time_iter ))
                 if last_cost == cost and move==0: 
-                    last_cost,_,_ = self.UpdateLabelsLast(representatives, X,representatives_sum, representatives_count,membship,labels_matrix)
+                    last_cost,_,_ = self.UpdateLabelsLast(representatives, self.X,representatives_sum, representatives_count,membship,labels_matrix)
                     #if TDef.verbose >=2: print ('Iter (last)' ,"Cost: ", "%.2f"%last_cost," Move:", move, " Num empty:", count_empty," Timelapse:","%.2f"% (timeit.default_timer()-start_time_iter ))
                     break 
                 last_cost = cost
@@ -319,6 +333,8 @@ class LSHkRepresentatives_Full(ClusteringAlgorithm):
         return self.labels
         # Update representives
     def predict(self,x):
+        if self.normalizer!=None:
+            x = self.normalizer.Normalize(x)
         if len(x.shape) ==1:
             dist_matrix = self.DistanceRepresentativestoAPoints(self.representatives, x)
             return dist_matrix[0]
