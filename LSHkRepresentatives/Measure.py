@@ -12,7 +12,7 @@ class Measure(object):
         return 'Finish caculating'
     def LoaddistMatrixAuto(self):
         if MeasureManager.IS_LOAD_AUTO == False or MeasureManager.CURRENT_DATASET=="None":
-            print( 'SKIP LOADING distMatrix because: ' + str(MeasureManager.IS_LOAD_AUTO) +" bd=" +MeasureManager.CURRENT_DATASET )
+            print( f'SKIP LOADING distMatrix because IS_LOAD_AUTO={MeasureManager.IS_LOAD_AUTO} or dbname={MeasureManager.CURRENT_DATASET}; If you cluster a dataset multiple times, make sure to include the \'dbname\' parameter during initialization to cache the distance matrix of the dataset. Calculating distance matrix can take a lot of time with high categirical values dataset.' )
             return False
         path = 'saved_dist_matrices/json/' + self.name+"_" + MeasureManager.CURRENT_DATASET+ ".json"
         if os.path.isfile(path):

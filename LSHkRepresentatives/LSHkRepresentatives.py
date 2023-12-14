@@ -24,9 +24,48 @@ import multiprocessing as mp
 import math
 from collections import defaultdict
 
+class CategoricalDatasetNormalization:
+    def __init__(self,X):
+        self.d = X.shape[1]
+        self.uniques = []
+        self.maps = []
+        for di in range(self.d):
+            x = X[:,di]
+            unique = np.unique(x)
+            mapi={}
+            for i in range(len(unique)):
+                mapi[unique[i]] = i
+            self.maps.append(mapi)
+            self.uniques.append(unique)
+        
+    
+    def Normalize(self,X):
+        if len(X.shape) ==2:
+            if X.shape[1] != self.d: raise Exception(f"ERROR, Dimension of the data should be {self.d} (must same as size of trained dataset)")
+            Xnormalized = np.zeros((X.shape),dtype=int)
+            for i in range(X.shape[0]):
+                for j in range(X.shape[1]):
+                    Xnormalized[i,j] = self.maps[j][X[i,j]]
+            return Xnormalized
+        else:
+            if X.shape[0] != self.d: raise Exception(f"ERROR, Dimension of the data should be {self.d} (must same as size of trained dataset)")
+            Xnormalized = np.zeros((X.shape),dtype=int)
+            for j in range(X.shape[0]):
+                Xnormalized[j] = self.maps[j][X[j]]
+            return Xnormalized
+        
 class LSHkRepresentatives(ClusteringAlgorithm):
 
     def SetupLSH(self, hbits=-1,k=-1,measure='DILCA' ):
+
+        
+        # self.n = n = self.X.shape[0]
+        # self.d = d = self.X.shape[1]
+        
+
+        
+        self.CheckNormalizedData()
+
         #hbits = 2*math.ceil(math.log(self.k)/math.log(2))
         start = timeit.default_timer()
         self.lsh = LSH(self.X,self.y,measure=measure,hbits=hbits)
@@ -172,19 +211,32 @@ class LSHkRepresentatives(ClusteringAlgorithm):
                 if membship[ki][i]:
                     labels[i] = ki
         return labels
+    def CheckNormalizedData(self):
+        isNormalized = True
+        for d in range(self.d):
+            if isNormalized == False: break
+            for dvalue in range(self.D[d]):
+                if dvalue not in self.uniques[d]:
+                    isNormalized = False; break
+        print("\n\n\n ",isNormalized,"\n\n\n\n\n")
+        if isNormalized== False:
+            self.normalizer = CategoricalDatasetNormalization(self.X)
+            self.X = self.normalizer.Normalize(self.X)
+        else: self.normalizer = None
+
     def DoCluster(self,n_group=2):
+        n = len(self.X)
+        d = self.X.shape[1]
         self.AddVariableToPrint("n_group",n_group)
         self.k = k = n_clusters = self.k
         self.farest_point = np.zeros((self.k,2))
 
         self.name = "LSHkRepresentatives"
-        #print("LSHkRepresentatives start clustering")
-        #Init varibles
-        X = self.X
         
-        self.n = n = self.X.shape[0];
-        self.d = d = X.shape[1]
-        self.D = D = [len(np.unique(X[:,i])) for i in range(d) ]
+        
+        
+        
+
 
         all_labels = []
         all_costs = []
@@ -196,11 +248,11 @@ class LSHkRepresentatives(ClusteringAlgorithm):
             labels_matrix = np.empty(n, dtype=np.uint16)
             
             for i in range(n): labels_matrix[i] = 65535
-            representatives_count = [[[0 for i in range(D[j])] for j in range(d)]for ki in range(k)]
+            representatives_count = [[[0 for i in range(self.D[j])] for j in range(d)]for ki in range(k)]
             representatives_sum = [0 for ki in range(k)]
             last_cost = float('inf')
 
-            representatives = [[[0 for i in range(D[j])] for j in range(d)] for ki in range(k)]
+            representatives = [[[0 for i in range(self.D[j])] for j in range(d)] for ki in range(k)]
             buckets = [(k,len(self.lsh.hashTable[k])) for k in self.lsh.hashTable.keys()]
             buckets2 = sorted(buckets, key=lambda x: -x[-1])
             buckets_map_to_centroids = {}
@@ -245,18 +297,18 @@ class LSHkRepresentatives(ClusteringAlgorithm):
                     labels_matrix[i] = ki
                     membship[ki][i]=1
                     representatives_sum[ki]+=1
-                    for ii, val in enumerate(X[i]):
+                    for ii, val in enumerate(self.X[i]):
                         representatives_count[ki][ii][val]+=1
                     self.lsh_group[i] = ki
 
-            self.CheckEmptyClusters(representatives, X,representatives_sum, representatives_count,membship,labels_matrix)
+            self.CheckEmptyClusters(representatives, self.X,representatives_sum, representatives_count,membship,labels_matrix)
             self.UpdateRepresentatives(representatives,representatives_sum,representatives_count ) 
             for i in range(self.n_iter):
                 self.iter = i
-                cost , move, count_empty = self.UpdateLabels(representatives, X,representatives_sum, representatives_count,membship,labels_matrix)
+                cost , move, count_empty = self.UpdateLabels(representatives, self.X,representatives_sum, representatives_count,membship,labels_matrix)
                 self.UpdateRepresentatives(representatives,representatives_sum,representatives_count ) 
                 if last_cost == cost and move==0: 
-                    last_cost = self.UpdateLabelsLast(representatives, X,representatives_sum, representatives_count,membship,labels_matrix)
+                    last_cost = self.UpdateLabelsLast(representatives, self.X,representatives_sum, representatives_count,membship,labels_matrix)
                     #print("last_cost=", last_cost, "last_cost2=",last_cost2)
                     break 
                 last_cost = cost
@@ -274,6 +326,9 @@ class LSHkRepresentatives(ClusteringAlgorithm):
         return self.labels
         # Update representives
     def predict(self,x):
+        if self.normalizer!=None:
+            x = self.normalizer.Normalize(x)
+
         if len(x.shape) ==1:
             dist_matrix = self.DistanceRepresentativestoAPoints(self.representatives, x)
             return dist_matrix[0]

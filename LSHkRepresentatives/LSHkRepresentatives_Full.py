@@ -23,6 +23,7 @@ from kmodes.util import get_max_value_key, encode_features, get_unique_rows, \
     decode_centroids, pandas_to_numpy
 
 from .ClusteringAlgorithm import ClusteringAlgorithm
+from .LSHkRepresentatives import CategoricalDatasetNormalization
 from sklearn.metrics.cluster import adjusted_rand_score
 from sklearn.metrics.cluster import normalized_mutual_info_score
 from sklearn.metrics.cluster import adjusted_mutual_info_score

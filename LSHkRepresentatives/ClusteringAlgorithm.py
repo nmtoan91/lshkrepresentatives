@@ -36,7 +36,7 @@ class ClusteringAlgorithm:
     #     self.n_init = n_init
     #     self.n_iter = max_iter
     #     self.scorebest = -2
-    def __init__(self,n_clusters,n_init=5,max_iter=100,dbname='dpname',verbose =0,random_state = None):
+    def __init__(self,n_clusters,n_init=5,max_iter=100,dbname="None",verbose =0,random_state = None):
         self.y = None
         self.random_state= random_state
         self.verbose = verbose 
@@ -52,8 +52,16 @@ class ClusteringAlgorithm:
         self.scorebest = -2
     def fit(self,X):
         self.X = X
+
+
         self.n = len(self.X)
         self.d = len(self.X[0])
+        self.uniques =  []
+        for i in range(self.d):
+            unique = np.unique(self.X[:,i])
+            self.uniques.append(unique)
+        self.D  = [len(self.uniques[i]) for i in range(self.d) ]
+
         self.SetupLSH()
         self.DoCluster()
         return self.labels
