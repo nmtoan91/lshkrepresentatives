@@ -50,21 +50,45 @@ class ClusteringAlgorithm:
         self.n_init = n_init
         self.n_iter = max_iter
         self.scorebest = -2
-    def fit(self,X,attributeMasks=None):
+
+    #attributeMasks: masking the types of attributes: 0 -> Categorical ; 1 -> Numeric  : Example: [0,1,0,1] means the 1st and 3rd attributes are the categircal attribues while 2st and 4rd attributes are the numeric attribues
+    def fit(self,X,attributeMasks=None, categorical_weight=1, numerical_weight=1):
+        """
+X: dataset
+attributeMasks: masking the types of attributes: 
+    0 -> Categorical ; 1 -> Numeric  : 
+    Example: [0,1,0,1] means the 1st and 3rd attributes are the categircal attribues while 2st and 4rd attributes are the numeric attribues
+categorical_weight: weight of categorical attributes
+numerical_weight: weight of numericcal attributes
+
+        """
+        self.weight_CATE = categorical_weight
+        self.weight_NUM = numerical_weight
         if type(attributeMasks) == list:
             attributeMasks = np.array(attributeMasks)
+        if attributeMasks is None:
+            attributeMasks = np.zeros((len(X[0])))
+        self.attributeMasks = attributeMasks
 
-        self.X = X
+        self.indexes_CATE =indexes_CATE= np.argwhere(attributeMasks==0)[:,0]
+        self.indexes_NUM = indexes_NUM  = np.argwhere(attributeMasks>0)[:,0]
 
+        
+        self.X_CATE = X[:,indexes_CATE]
+        self.X_NUM = X[:,indexes_NUM].astype(float)
 
-        self.n = len(self.X)
-        self.d = len(self.X[0])
-        self.uniques =  []
-        for i in range(self.d):
-            unique = np.unique(self.X[:,i])
-            self.uniques.append(unique)
-        self.D  = [len(self.uniques[i]) for i in range(self.d) ]
-        self.SetAttributeMasks(attributeMasks)
+        
+        self.d_NUM = len(self.X_NUM[0])
+
+        self.n = len(self.X_CATE)
+        self.d_CATE = len(self.X_CATE[0])
+        self.uniques_CATE =  []
+        for i in range(self.d_CATE):
+            unique = np.unique(self.X_CATE[:,i])
+            self.uniques_CATE.append(unique)
+        self.D_CATE  = [len(self.uniques_CATE[i]) for i in range(self.d_CATE) ]
+        
+
 
         self.SetupLSH()
         self.DoCluster()

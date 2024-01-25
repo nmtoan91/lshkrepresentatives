@@ -10,8 +10,8 @@ from collections import defaultdict
 from sklearn.utils import check_random_state
 from sklearn.utils.validation import check_array
 import timeit
-from kmodes.util import get_max_value_key, encode_features, get_unique_rows, \
-    decode_centroids, pandas_to_numpy
+#from kmodes.util import get_max_value_key, encode_features, get_unique_rows, \
+#    decode_centroids, pandas_to_numpy
 
 from .ClusteringAlgorithm import ClusteringAlgorithm
 from sklearn.metrics.cluster import adjusted_rand_score
@@ -51,13 +51,18 @@ class CategoricalDatasetNormalization:
             if X.shape[0] != self.d: raise Exception(f"ERROR, Dimension of the data should be {self.d} (must same as size of trained dataset)")
             Xnormalized = np.zeros((X.shape),dtype=int)
             for j in range(X.shape[0]):
-                Xnormalized[j] = self.maps[j][X[j]]
+                Xnormalized[j] = self.maps[j][str(X[j])]
             return Xnormalized
         
 class LSHkRepresentatives(ClusteringAlgorithm):
 
     def SetupLSH(self, hbits=-1,k=-1,measure='DILCA' ):
-
+        self.d = self.d_CATE
+        self.D = self.D_CATE
+        self.X = self.X_CATE
+        self.uniques = self.uniques_CATE
+        if self.d_NUM > 0:
+            print("\n\n YOU ARE SETTING SOME NUMERIC ATTRIBUTES IN YOUR DATA, SO PLEASE USE LSHkPrototypes INSTEAD OF LSHkRepresentatives \n\n")
         
         # self.n = n = self.X.shape[0]
         # self.d = d = self.X.shape[1]

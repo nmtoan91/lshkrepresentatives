@@ -1,21 +1,27 @@
-### Python implementations of the LSH-k-Representatives algorithms for clustering categorical data:
+# Clustering algorithm for Mixed data of categorical and numerical values using LSH.
+## Notebook samples:
+### 1. LSH-k-Representatives : Clustering of categorical attributes only:
+### https://github.com/nmtoan91/lshkrepresentatives/blob/main/notebook_sample_clustering_categorical_data.ipynb
 
-#### Different from k-Modes algorithm, LSH-k-Representatives define the "representatives" that keep the frequencies of all categorical values of the clusters.
+### 2. LSH-k-Prototypes : Clustering of mixed data (categorical and numerical attributes):
+### https://github.com/nmtoan91/lshkrepresentatives/blob/main/notebook_sample_clustering_mixed_data_type.ipynb
 
-## Notebook Samples: 
-##### Applying LSHkRepresentatives:
-##### https://github.com/nmtoan91/lshkrepresentatives/blob/main/notebook_sample.ipynb
-##### Applying LSHkRepresentatives_Full (for huge dataset):
-##### https://github.com/nmtoan91/lshkrepresentatives/blob/main/notebook_sample_LSHkRepresentatives_Full.ipynb
-##### Normalizing unstructed normal dataset: 
-##### https://github.com/nmtoan91/lshkrepresentatives/blob/main/notebook_dataset_normalization.ipynb
-Note: The dataset is auto normalized if it detect string, or disjointed data, or nan 
+### 3. LSH-k-Representatives-Full : Clustering of HUGE categorical attributes only:
+### https://github.com/nmtoan91/lshkrepresentatives/blob/main/notebook_sample_LSHkRepresentatives_Full.ipynb
+
+### 4. Normalizing unstructed normal dataset: 
+### https://github.com/nmtoan91/lshkrepresentatives/blob/main/notebook_dataset_normalization.ipynb
+
+<br />
+<br />
+Note 1: Different from k-Modes algorithm, LSH-k-Representatives define the "representatives" that keep the frequencies of all categorical values of the clusters. There are threee algorithms 
+Note 2: The dataset is auto normalized if it detect string, or disjointed data, or nan 
 
 
 ## Installation:
 ### Using pip: 
 ```shell
-pip install lshkrepresentatives numpy scikit-learn pandas kmodes networkx termcolor
+pip install lshkrepresentatives numpy scikit-learn pandas networkx termcolor
 ```
 
 ### Import the packages:
@@ -29,7 +35,7 @@ from LSHkRepresentatives.LSHkRepresentatives import LSHkRepresentatives
 X = np.array([['red',0,np.nan],['green',1,1],['blue',0,0],[1,5111,1],[2,2,2],[2,6513,'rectangle'],[2,3,6565]])
 ```
 
-### LSHk-Representatives (Init): 
+## Using LSHk-Representatives (categorical clustering): 
 
 ```python
 #Init instance of LSHkRepresentatives 
@@ -44,7 +50,7 @@ label = kreps.predict(x)
 print(f'Cluster of object {x} is: {label}')
 ```
 
-### Outcome:
+#### Outcome:
 ```shell
 SKIP LOADING distMatrix because: False bd=None
 Generating disMatrix for DILCA
@@ -55,64 +61,35 @@ Labels: [1 1 1 1 0 0 0]
 Cluster of object [1 2 0] is: 1
 ```
 
-### Built-in evaluattion metrics:
+### Call built-in evaluattion metrics:
 ```python
 y = np.array([0,0,0,0,1,1,1])
 kreps.CalcScore(y)
 ```
-### Outcome:
+#### Outcome:
 ```shell
 Purity: 1.00 NMI: 1.00 ARI: 1.00 Sil:  0.59 Acc: 1.00 Recall: 1.00 Precision: 1.00
 ```
 
-
-### LSHk-Representatives (Full): 
-This version of LSHk-Representatives target for huge dataset, the accuracy will be reduced but the speed is increase from 2 to 32 times depend on the data
-
+## Using LSHk-Prototypes (Mixed categorical and numerical attributes clustering): 
+For example: We have a dataset of 5 attributes (3 categorical and 2 numerical).
 ```python
-X = np.array([[0,0,0],[0,1,1],[0,0,0],[1,0,1],[2,2,2],[2,3,2],[2,3,2]])
-kreps = LSHkRepresentatives_Full(n_clusters=2,n_init=5) 
-labels = kreps.fit(X)
-print('Labels:',labels)
-x = np.array([1,2,0])
-label = kreps.predict(x)
-print(f'Cluster of object {x} is: {label}')
+from LSHkRepresentatives.LSHkPrototypes import LSHkPrototypes
+kprototypes = LSHkPrototypes(n_clusters=2,n_init=5) 
+X = np.array([['red',0,np.nan,1,1],
+              ['green',1,1,0,0],
+              ['blue',0,0,3,4],
+              [1,5111,1,1.1,1.2],
+              [2,2,2,29.0,38.9],
+              [2,6513,'rectangle',40,41.1],
+              ['red',0,np.nan,30.4,30.1]])
+
+attributeMasks = [0,0,0,1,1]
+# attributeMasks = [0,0,0,1,1] means attributes are
+# [categorial,categorial,categorial,numerical,numerical]
+a = kprototypes.fit(X,attributeMasks,numerical_weight=2, categorical_weight=1)
+print(a)
 ```
-
-### Built-in evaluattion metrics:
-```python
-y = np.array([0,0,0,0,1,1,1])
-kreps.CalcScore(y)
-```
-
-### Out come:
-```shell
-SKIP LOADING distMatrix because: True bd=None
-Generating disMatrix for DILCA
-Saving DILCA to: saved_dist_matrices/json/DILCA_None.json
-Generating LSH hash table:   hbits: 2(4)  k 2  d 3  n= 7
- n_group=2 Average neighbors:1.0
-LSH time: 0.00661619999999985 Score:  6.333333333333334  Time: 0.000932080000000024
-Purity: 1.00 NMI: 1.00 ARI: 1.00 Sil:  0.59 Acc: 1.00 Recall: 1.00 Precision: 1.00
-```
-
-## Parameters:
-X: Categorical dataset\
-y: Labels of object (for evaluation only)\
-n_init: Number of initializations \
-n_clusters: Number of target clusters\
-max_iter: Maximum iterations\
-verbose: \
-random_state: 
-
-If the variable MeasureManager.IS_LOAD_AUTO is set to "True": The DILCA will get the pre-caculated matrix
- 
-## Outputs:
-cluster_representatives: List of final representatives\
-labels_: Prediction labels\
-cost_: Final sum of squared distance from objects to their centroids\
-n_iter_: Number of iterations\
-epoch_costs_: Average time for an initialization
 
 
 ## References:

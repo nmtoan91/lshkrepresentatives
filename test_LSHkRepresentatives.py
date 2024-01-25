@@ -22,3 +22,22 @@ print(label2)
 
 y = np.array([0,0,0,0,1,1,1])
 kreps.CalcScore(y)
+
+
+
+kreps = LSHkRepresentatives(n_clusters=2,n_init=5) 
+X = np.array([['red',0,np.nan],
+              ['green',1,1],
+              ['blue',0,0],
+              [1,5111,1],
+              [2,2,2],
+              [2,6513,'rectangle'],
+              [2,3,6565]])
+
+labels = kreps.fit(X)
+
+print('Labels:',labels)
+
+x = np.array([1,2,0])
+label = kreps.predict(x)
+label

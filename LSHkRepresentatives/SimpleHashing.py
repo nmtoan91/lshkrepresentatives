@@ -56,6 +56,12 @@ class SimpleHashing:
         self.cut_values =[]
         self.cut_values_normal =[]
         for di in range(self.d):
+            if simMatrix[di] == None:
+                self.partitions.append(None)
+                self.cut_values.append(None)
+                self.cut_values_normal.append(self.attributeMasks[di]*2)
+                continue
+
             G = nx.Graph()
             for i in range(self.D[di]):
                 matrix1D = [] # 1D array for 1 dimension

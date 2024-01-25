@@ -18,6 +18,7 @@ import statistics
 from collections import Counter
 class LSH(SimpleHashing):
     def DoHash(self):
+
         self.measure.GeneratesimMatrix()
         self.GenerateSimilarityMatrix(self.measure.simMatrix)
         self.bit_indexes  = np.argpartition(self.cut_values_normal, self.hbits)[:self.hbits]   
@@ -34,25 +35,29 @@ class LSH(SimpleHashing):
     def GetNeighborsbyBucket(self, item_id):
         return self.hashTable[self.hash_values[item_id]]
 
-    def ComputeHashValue(self,x):
+    def ComputeHashValue_Old(self,x): #NEW
         val=0
         for i in range(self.hbits):
+            
             partitions = self.partitions[self.bit_indexes[i]]
             val <<=1
             if x[self.bit_indexes[i]] in partitions[1]:
                 val+=1
         return val
-    #def ComputeHashValue(self,x):
-    #    val=0
-    #    for i in range(self.hbits):
-    #        #partitions = self.partitions[self.bit_indexes[i]]
-    #        val <<=1
-    #        #if x[self.bit_indexes[i]] in partitions[1]:
-    #        if x[self.bit_indexes[i]] >= self.D[self.bit_indexes[i]]/2:
-    #            val+=1
-    #    return val
-    #def TryToMovePoint(self,hashValue_ori, hashValue_cur, index ):
-        #for i in range(index,self.hbits):
+    def ComputeHashValue(self,x): #NEW
+        val=0
+        for i in range(self.hbits):
+            partitions = self.partitions[self.bit_indexes[i]]
+            val <<=1
+            if partitions is None:
+                median = self.measure.medianValues[self.bit_indexes[i]]
+                if x[self.bit_indexes[i]] < median:
+                    val+=1
+            else:
+                
+                if x[self.bit_indexes[i]] in partitions[1]:
+                    val+=1
+        return val
 
     def hammingDistance(self, x, y):
         ans = 0

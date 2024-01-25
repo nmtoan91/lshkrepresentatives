@@ -62,8 +62,9 @@ class Measure(object):
         self.d = d = len(self.X_[0])
         self.simMatrix = [];
         self.D = D = [len(np.unique(self.X_[:,i])) for i in range(d) ]
+        self.medianValues = {}
         for di in range(d):
-            #if self.att
+            
             matrix2D = [] # 2D array for 1 dimension
             for i in range(D[di]):
                 matrix1D = [] # 1D array for 1 dimension

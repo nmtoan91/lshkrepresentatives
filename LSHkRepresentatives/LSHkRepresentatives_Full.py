@@ -19,8 +19,8 @@ from collections import defaultdict
 from sklearn.utils import check_random_state
 from sklearn.utils.validation import check_array
 import timeit
-from kmodes.util import get_max_value_key, encode_features, get_unique_rows, \
-    decode_centroids, pandas_to_numpy
+#from kmodes.util import get_max_value_key, encode_features, get_unique_rows, \
+#    decode_centroids, pandas_to_numpy
 
 from .ClusteringAlgorithm import ClusteringAlgorithm
 from .LSHkRepresentatives import CategoricalDatasetNormalization
@@ -39,6 +39,14 @@ from collections import defaultdict
 class LSHkRepresentatives_Full(ClusteringAlgorithm):
 
     def SetupLSH(self, hbits=-1,k=-1,measure='DILCA' ):
+        self.d = self.d_CATE
+        self.D = self.D_CATE
+        self.X = self.X_CATE
+        self.uniques = self.uniques_CATE
+        if self.d_NUM > 0:
+            print("\n\n YOU ARE SETTING SOME NUMERIC ATTRIBUTES IN YOUR DATA, SO PLEASE USE LSHkPrototypes INSTEAD OF LSHkRepresentatives_Full \n\n")
+
+
         self.CheckNormalizedData()
         #hbits = 2*math.ceil(math.log(self.k)/math.log(2))
         start = timeit.default_timer()
