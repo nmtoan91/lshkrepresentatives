@@ -50,7 +50,10 @@ class ClusteringAlgorithm:
         self.n_init = n_init
         self.n_iter = max_iter
         self.scorebest = -2
-    def fit(self,X):
+    def fit(self,X,attributeMasks=None):
+        if type(attributeMasks) == list:
+            attributeMasks = np.array(attributeMasks)
+
         self.X = X
 
 
@@ -61,6 +64,7 @@ class ClusteringAlgorithm:
             unique = np.unique(self.X[:,i])
             self.uniques.append(unique)
         self.D  = [len(self.uniques[i]) for i in range(self.d) ]
+        self.SetAttributeMasks(attributeMasks)
 
         self.SetupLSH()
         self.DoCluster()

@@ -57,11 +57,13 @@ class Measure(object):
                     matrix1D.append(matrix_tmp)
                 matrix2D.append(matrix1D)
             self.distMatrix.append(matrix2D)
+
     def GeneratesimMatrix(self):
         self.d = d = len(self.X_[0])
         self.simMatrix = [];
         self.D = D = [len(np.unique(self.X_[:,i])) for i in range(d) ]
         for di in range(d):
+            #if self.att
             matrix2D = [] # 2D array for 1 dimension
             for i in range(D[di]):
                 matrix1D = [] # 1D array for 1 dimension

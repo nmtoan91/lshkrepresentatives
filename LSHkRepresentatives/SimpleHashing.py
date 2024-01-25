@@ -12,7 +12,8 @@ import math
 
 class SimpleHashing:
     ALGORITHM_LIST = ['LSH']
-    def __init__(self, X, y,n_init=10,hbits=-1,k=-1,measure='DILCA'):
+    def __init__(self, X, y,n_init=10,hbits=-1,k=-1,measure='DILCA',attributeMasks=None):
+        self.attributeMasks = attributeMasks
         self.X = X
         self.y = y
         self.n = len(self.X)
