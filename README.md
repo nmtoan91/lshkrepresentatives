@@ -1,4 +1,4 @@
-# Clustering algorithm for Mixed data of categorical and numerical values using LSH.
+# Clustering algorithm for Mixed data of categorial and numerical (ordinal and nonordinal) data using LSH.
 ## Notebook samples:
 ### 1. LSH-k-Representatives : Clustering of categorical attributes only:
 ### https://github.com/nmtoan91/lshkrepresentatives/blob/main/notebook_sample_clustering_categorical_data.ipynb
