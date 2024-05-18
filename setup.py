@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="lshkrepresentatives", 
-    version="1.2.2",
+    version="1.2.3",
     author="nmtoan91",
     author_email="toan_stt@yahoo.com",
     description="LSH-k-Representatives: Mixed categorial and numerical (ordinal and nonordinal) data clustering algorithm algorithm",
