@@ -78,9 +78,9 @@ class LSHkPrototypes(ClusteringAlgorithm):
         means_count[from_id] -= 1
 
         if  len(means_sum.shape)>1:
-            for ki in range(self.k):
-                means_sum[to_id][ki] += self.X_NUM[point_id][ki]
-                means_sum[from_id][ki] -= self.X_NUM[point_id][ki]
+            for di in range(self.d_NUM):
+                means_sum[to_id][di] += self.X_NUM[point_id][di]
+                means_sum[from_id][di] -= self.X_NUM[point_id][di]
 
     def CheckEmptyClusters(self,representatives, X,representatives_sum, representatives_count,membship,labels_matrix,means_count,means_sum,means):
         move =0
